@@ -49,7 +49,7 @@ siren_ontime = 0
 bar = LedBar(bar_pins, temp_bounds)
 siren_stop_btn = Button(17, 27)
 history = Array('d', HISTORYlEN)
-maxTemp = 0
+maxTemp = [0]
 
 # turn off the relay
 Pin(26).low()
@@ -85,6 +85,7 @@ def Decline_alert():
 def main():
     
     global siren_ontime, maxTemp
+    posledni_maxTemp=0
     pressed_for = 0
     blik_i = 0
     odpocet = 0
@@ -105,13 +106,17 @@ def main():
 
         bar.display(temperature)
 
-        if maxTemp < temperature:
-            maxTemp = temperature
-            print("Nová maximální hodnota: ", maxTemp)
-        elif temperature < (maxTemp - FALLaLARM):
+        if maxTemp[0] < temperature:
+            maxTemp[0] = temperature
+            print("Nová maximální hodnota: ", maxTemp[0])
+
+        if posledni_maxTemp < temperature:
+            posledni_maxTemp = temperature
+            print("Nová posledni maximální hodnota: ", posledni_maxTemp)
+        elif temperature < (posledni_maxTemp - FALLaLARM):
             Decline_alert()
-            maxTemp = temperature
-            print("Maximální teplota byla snížena na: ", maxTemp)
+            posledni_maxTemp = temperature
+            print("Maximální teplota byla snížena na: ", posledni_maxTemp)
          
         for _ in range(int(check_delay / .1)):
             if siren_stop_btn.get():

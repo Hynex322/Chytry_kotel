@@ -12,7 +12,7 @@ max_Temp = None
 @app.route("/")
 def index():
     global history, max_Temp
-    return render_template('main.html', temp=sensor.get_temperature(), len=len(tmp_history[:]), history=tmp_history[:], maxTemp=max_Temp)
+    return render_template('main.html', temp=sensor.get_temperature(), len=len(tmp_history[:]), history=tmp_history[:], maxTemp=max_Temp[0])
 
 @app.route("/temp")
 def temp():
@@ -21,7 +21,7 @@ def temp():
 @app.route("/maxTemp")   
 def maxTemp():
     global max_Temp
-    return str(max_Temp)
+    return str(max_Temp[0])
     
 @app.route("/reboot")
 def reboot_server():
