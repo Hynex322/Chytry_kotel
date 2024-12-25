@@ -20,16 +20,18 @@ def temp():
     
 @app.route("/reboot")
 def reboot_server():
-    os.system(' (sleep 2 && reboot) &) ')
+    os.system(' (sleep 1 && reboot) &) ')
     return redirect("/")
 
 @app.route("/update")
 def update():
     os.system('git pull')
+    return redirect("/")
     
 @app.route("/shutdown")
 def shutdown_server():
-    os.system('shutdown now')
+    os.system('(sleep 1 && shutdown now &)')
+    return redirect("/")
 
 def run(tmp_sensor, ip, history):
     global sensor, tmp_history
