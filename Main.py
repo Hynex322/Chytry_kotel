@@ -49,6 +49,7 @@ siren_ontime = 0
 bar = LedBar(bar_pins, temp_bounds)
 siren_stop_btn = Button(17, 27)
 history = Array('d', HISTORYlEN)
+maxTemp = 0
 
 # turn off the relay
 Pin(26).low()
@@ -83,10 +84,9 @@ def Decline_alert():
 # program loop
 def main():
     
-    global siren_ontime
+    global siren_ontime, maxTemp
     pressed_for = 0
     blik_i = 0
-    maxTemp = 0
     odpocet = 0
     roztopen_kotel = 0
     while True:
