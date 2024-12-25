@@ -1,0 +1,322 @@
+﻿<html lang="cs">
+    <head>
+        <title>Kotel</title>
+        <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <style>
+            body {
+                background-color: #333333;
+                color: white;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                display: flex;
+                justify-content: center;
+                min-height: 100vh;
+                margin: 0px;
+            }
+            .alarmed {
+                background: linear-gradient(342deg, #333333, #ff2929) !important;
+                background-size: 400% 400% !important;
+
+                -webkit-animation: pulse 1s ease infinite;
+                -moz-animation: pulse 1s ease infinite;
+                animation: pulse 1s ease infinite;
+            }
+            .main {
+                margin-top: 100px;
+                text-align: center;
+            }
+            .bar {
+                width: 300px;
+                border-radius: 10px;
+                height: 5px;
+                margin-top: 20px;
+                background-color: #666;
+                margin: auto auto;
+            }
+            .inner {
+                border-radius: 10px;
+                height: 5px;
+                margin-top: 20px;
+                background-color: #57fd57;
+                /*background-color:#ff2929; alarm*/
+                transition-duration: 250ms;
+            }
+            .graph {
+                border-radius: 10px;
+                background-color: #666;
+                height: 300px;
+                width: 1000px;
+                margin-top: 100px;
+                padding: 20px;
+                display:flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: flex-end;
+            }
+            .column .in {
+                height: calc(100% - 1em);
+                width: 50px;
+                border-radius: 5px;
+                background-color: #ffab3c;
+                margin: 0 10px;
+                transition-duration: 250ms;
+                min-height: 1px !important;
+            }
+            .column .in:hover {
+                width: 60px;
+            }
+            .column {
+                /* color: transparent;  */
+                color:rgba(255, 255, 255, 0.699);
+                transition-duration: 250ms;
+            }
+            .column:hover {
+                color: #ffab3c;
+                font-weight: bold;
+            }
+            @keyframes poper {
+                0% {
+                    transform: scale(1);
+                }
+                40% {
+                    transform: scale(1,1) rotate(15deg);
+                }
+                50% {
+                    transform: scale(1.3) rotate(-15deg);
+                }
+                60% {
+                    transform: scale(1.1) rotate(15deg);
+                }
+                100% {
+                    transform: scale(1);
+                }
+            }
+            @-webkit-keyframes pulse {
+                0%{background-position:88% 0%}
+                50%{background-position:13% 100%}
+                100%{background-position:88% 0%}
+            }
+            @-moz-keyframes pulse {
+                0%{background-position:88% 0%}
+                50%{background-position:13% 100%}
+                100%{background-position:88% 0%}
+            }
+            @keyframes pulse {
+                0%{background-position:88% 0%}
+                50%{background-position:13% 100%}
+                100%{background-position:88% 0%}
+            }
+            .alarm {
+                border-radius: 250px;
+                height: 250px;
+                width: 250px;
+                background-color: #ff2b2b;
+                animation: poper 1s;
+                animation-iteration-count: infinite;
+                margin-top: 20px;
+                background-image: url("{{ url_for('static', filename='siren_image.png') }}");
+                background-size:70%;
+                background-repeat: no-repeat;
+                background-position: center;
+                position: absolute;
+                top: calc(50% - 125px);
+                left: calc(50% - 125px);
+            }
+            .button {
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                width: 100%;
+                height: 70px;
+                border-radius: 10px;
+                font-size: 15px;
+                margin: 4px 2px;
+                cursor: pointer;
+            }
+            
+            .odkaz {
+  
+                    text-decoration: none;
+                    text-decoration-color: red;
+                    display: inline-block;
+                    font-size: 15px;
+                    margin: 4px 2px;
+                    cursor: pointer;
+                }
+                
+            table, td {
+                border: 2px solid black;
+                padding: 10px;
+                height: 100px;
+            }            
+
+        </style>
+    </head>
+    <body onload="start_listening()">
+        <div class="main">
+            <h1 style="margin: auto auto">Kotel</h1>
+            Teplota: <span id="temp-label">{{ temp }}</span> °C<BR>
+            Max. teplota: <span id="tempMax-label">{{ maxTemp }}</span> °C
+            <div class="bar"><div class="inner" id="bar-in" style="width: 0%"></div></div>
+            
+            <BR>
+            <table WIDTH = 270 ALIGN = center>
+              <TR text-align: center><TD WIDTH = 50%><a href="/shutdown" class= "odkaz"><button class="button">Vypnout</a></button></TD><TD><a href="/reboot" class= "odkaz"><button class="button">Reboot</a></button></TD></TR>
+            </table>      
+                     
+            <div id="graph" class="graph">
+
+            </div>
+
+            <div id="alarm_place"></div>
+            <!--<div class="alarm"></div>
+
+            <audio id="xyz" src="/siren_sound.mp3" preload="auto" loop="loop" autoplay="autoplay"></audio> alarm-->
+        </div>
+    <script>
+        Number.prototype.clamp = function(min, max) {
+            return Math.min(Math.max(this, min), max);
+        };
+
+        function start_listening()
+        {
+            window.setInterval(update, 10000);
+        }
+
+        var update_lock = false;
+        function update()
+        {
+            if (update_lock) { return; }
+            update_lock = true;
+
+            ajax("/temp", "get", update_ajax);
+        }
+
+        var alarmed = false;
+        function update_ajax(obj)
+        {
+            update_lock = false;
+
+            if (obj.status == 200) {
+                var t = obj.responseText;
+                t = Math.round(parseFloat(t) * 10) / 10;
+                update_temperature(t);
+                if (t >= 90 && !alarmed) {
+                    trigger_alarm();
+                    alarmed = true;
+                } else if (alarmed && t < 90) {
+                    alarmed = false;
+                    stop_alarm();
+                }
+            }
+        }
+
+
+        var iterated = 0;
+        var graph_columns = 0;
+        function update_temperature(temperature, maxTemper)
+        {
+            update_element('temp-label', temperature);
+	    update_element('tempMax-label', maxTemper);
+            var percentage = (temperature - 20).clamp(0, 100);
+            if (iterated % 36 == 0 || iterated < 10) {
+                var el = createElementFromHTML("<div class='column' style='height: "+percentage+"%'><div class='in'></div>"+temperature+" °C</div>");
+                document.getElementById("graph").appendChild(el);
+                graph_columns += 1;
+                if (graph_columns > 10) {
+                    document.getElementById("graph").children[0].remove();
+                }
+            }
+            var color = mix("ff0000", "00ff00", percentage, 70);
+            document.getElementById("bar-in").style = "width: "+percentage+"%; background-color: " + color;
+            iterated += 1;
+        }
+
+        function update_element(id, html, append=false)
+        {
+            el = document.getElementById(id);
+            if (append) {
+                el.innerHTML += html;
+            } else {
+                el.innerHTML = html;
+            }
+        }
+
+        function createElementFromHTML(htmlString) {
+            var div = document.createElement('div');
+            div.innerHTML = htmlString.trim();
+            // Change this to div.childNodes to support multiple top-level nodes
+            return div.firstChild;
+        }
+
+        function trigger_alarm()
+        {
+            var alarm_el = `
+            <div class="alarm"></div>
+            <audio id="xyz" src="{{ url_for('static', filename='siren_sound.mp3') }}" preload="auto" loop="loop" autoplay="autoplay"></audio>
+            `;
+            update_element('alarm_place', alarm_el);
+            document.getElementsByTagName("BODY")[0].className = "alarmed";
+        }
+        function stop_alarm()
+        {
+            update_element('alarm_place', '');
+            document.getElementsByTagName("BODY")[0].className = '';
+        }
+
+        function mix(color1, color2, percentage, threshold)
+        {
+            if (percentage < threshold) { return; }
+            var cd1 = [];
+            var cd2 = [];
+            color1.match(/.{1,2}/g).forEach(element => {
+                element = parseInt(element, 16);
+                cd1.push(element);
+            });
+            color2.match(/.{1,2}/g).forEach(element => {
+                element = parseInt(element, 16);
+                cd2.push(element);
+            });
+            var final_decar = [];
+            for (var i=0; i<3; i++)
+            {
+                var part = cd1[i] * percentage / 100 + cd2[i] * (100 - percentage) / 100;
+                part = Math.round(part.clamp(0, 255)).toString(16);
+                if (part.length == 1) {
+                    part = "0" + part;
+                }
+                final_decar.push(part);
+            }
+            var hex = "#" + final_decar[0] +""+ final_decar[1] +""+ final_decar[2];
+            return hex;
+        }
+
+        function ajax(url, method, callback, params = null) {
+            var obj;
+            try {
+                obj = new XMLHttpRequest();
+            } catch(e){
+                try {
+                 obj = new ActiveXObject("Msxml2.XMLHTTP");
+                } catch(e) {
+                    try {
+                        obj = new ActiveXObject("Microsoft.XMLHTTP");
+                    } catch(e) {
+                        alert("Your browser does not support Ajax.");
+                        return false;
+                    }
+                }
+            }
+            obj.onreadystatechange = function() {
+                if(obj.readyState == 4) {
+                        callback(obj);
+                }
+            }
+            obj.open(method, url, true);
+            obj.send(params);
+            return obj;
+        }
+    </script>
+
+    </body>
+</html>
