@@ -1,5 +1,6 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, redirect, render_template, url_for
 import multiprocessing
+import os
 #from Temperature import TemperatureSensor
 
 app = Flask('Kotel server')
@@ -19,12 +20,15 @@ def temp():
     
 @app.route("/reboot")
 def reboot_server():
-    import os
-    os.system('reboot')
+    os.system(' (sleep 2 && reboot) &) ')
+    return redirect("/")
+
+@app.route("/update")
+def update():
+    os.system('git pull')
     
 @app.route("/shutdown")
 def shutdown_server():
-    import os
     os.system('shutdown now')
 
 def run(tmp_sensor, ip, history):
