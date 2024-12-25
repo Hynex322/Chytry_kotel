@@ -194,6 +194,7 @@
             update_lock = true;
 
             ajax("/temp", "get", update_ajax);
+            ajax("/maxTemp", "get", update_ajax_maxTemp);
         }
 
         var alarmed = false;
@@ -214,14 +215,23 @@
                 }
             }
         }
+        function update_ajax_maxTemp(obj)
+        {
+            update_lock = false;
+
+            if (obj.status == 200) {
+                var t = obj.responseText;
+                t = Math.round(parseFloat(t) * 10) / 10;
+                update_element('tempMax-label', maxTemper);                
+            }
+        }
 
 
         var iterated = 0;
         var graph_columns = 0;
-        function update_temperature(temperature, maxTemper)
+        function update_temperature(temperature)
         {
             update_element('temp-label', temperature);
-	    update_element('tempMax-label', maxTemper);
             var percentage = (temperature - 20).clamp(0, 100);
             if (iterated % 36 == 0 || iterated < 10) {
                 var el = createElementFromHTML("<div class='column' style='height: "+percentage+"%'><div class='in'></div>"+temperature+" °C</div>");
