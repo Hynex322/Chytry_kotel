@@ -8,6 +8,7 @@ from Button import Button
 import Server
 from Pin import Pin
 from multiprocessing import Array
+import threading
 
 # gpio w1 init
 os.system('sudo modprobe w1-gpio')
@@ -49,7 +50,7 @@ siren_ontime = 0
 bar = LedBar(bar_pins, temp_bounds)
 siren_stop_btn = Button(17, 27)
 history = Array('d', HISTORYlEN)
-maxTemp = [0]
+maxTemp = 0
 
 # turn off the relay
 Pin(26).low()
@@ -106,9 +107,9 @@ def main():
 
         bar.display(temperature)
 
-        if maxTemp[0] < temperature:
-            maxTemp[0] = temperature
-            print("Nová maximální hodnota: ", maxTemp[0])
+        if maxTemp < temperature:
+            maxTemp = temperature
+            print("Nová maximální hodnota: ", maxTemp)
 
         if posledni_maxTemp < temperature:
             posledni_maxTemp = temperature
