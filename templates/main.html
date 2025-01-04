@@ -37,8 +37,9 @@
                 border-radius: 10px;
                 height: 5px;
                 margin-top: 20px;
-                background-color: #57fd57;
-                /*background-color:#ff2929; alarm*/
+                background-color: #0099CC;
+                /*background-color: #57fd57;
+                background-color:#ff2929; alarm*/
                 transition-duration: 250ms;
             }
             .graph {
@@ -57,7 +58,8 @@
                 height: calc(100% - 1em);
                 width: 50px;
                 border-radius: 5px;
-                background-color: #ffab3c;
+                /*background-color: #ffab3c;*/
+                background-color: #0099CC;
                 margin: 0 10px;
                 transition-duration: 250ms;
                 min-height: 1px !important;
@@ -161,10 +163,10 @@
             
             <BR>
             <table WIDTH = 270 ALIGN = center>
-              <TR text-align: center>
-                <TD WIDTH = 50%><a href="/shutdown" class= "odkaz"><button class="button">Vypnout</a></button></TD>
-                <TD><a href="/reboot" class= "odkaz"><button class="button">Reboot</a></button></TD>
-                <TD><a href="/update" class= "odkaz"><button class="button">Update</a></button></TD></TR>
+            <TR text-align: center>
+                <TD><a href="/shutdown" class= "odkaz"><button class="button">Vypnout</button></a></TD>
+                <TD><a href="/reboot" class= "odkaz"><button class="button">Reboot</button></a></TD>
+                <TD><a href="/update" class= "odkaz"><button class="button">Update</button></a></TD>
             </TR>
             </table>      
                      
@@ -232,17 +234,19 @@
         function update_temperature(temperature)
         {
             update_element('temp-label', temperature);
-            var percentage = (temperature - 20).clamp(0, 100);
+            var percentage = (temperature).clamp(0, 100);
+            var color = mix("ff0000", "FFED00", percentage, 40);
+            document.getElementById("bar-in").style = "width: "+percentage+"%; background-color: " + color;
+
             if (iterated % 36 == 0 || iterated < 10) {
-                var el = createElementFromHTML("<div class='column' style='height: "+percentage+"%'><div class='in'></div>"+temperature+" °C</div>");
+                var el = createElementFromHTML("<div class='column' style='height: "+percentage+"%'><div class='in' style='background-color:" + color+"'></div>"+temperature+" °C</div>");
                 document.getElementById("graph").appendChild(el);
                 graph_columns += 1;
                 if (graph_columns > 10) {
                     document.getElementById("graph").children[0].remove();
                 }
             }
-            var color = mix("ff0000", "00ff00", percentage, 70);
-            document.getElementById("bar-in").style = "width: "+percentage+"%; background-color: " + color;
+            
             iterated += 1;
         }
 
@@ -281,6 +285,7 @@
         function mix(color1, color2, percentage, threshold)
         {
             if (percentage < threshold) { return; }
+            posunuty_percentage= percentage-30;
             var cd1 = [];
             var cd2 = [];
             color1.match(/.{1,2}/g).forEach(element => {
@@ -294,7 +299,7 @@
             var final_decar = [];
             for (var i=0; i<3; i++)
             {
-                var part = cd1[i] * percentage / 100 + cd2[i] * (100 - percentage) / 100;
+                var part = cd1[i] * posunuty_percentage / 60 + cd2[i] * (60 - posunuty_percentage) / 60;
                 part = Math.round(part.clamp(0, 255)).toString(16);
                 if (part.length == 1) {
                     part = "0" + part;
