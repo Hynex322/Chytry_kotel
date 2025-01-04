@@ -30,7 +30,7 @@ def reboot_server():
 
 @app.route("/update")
 def update():
-    os.system('git pull &')
+    os.system('sudo git pull &')
     return redirect("/")
     
 @app.route("/shutdown")
