@@ -51,7 +51,7 @@ def run(tmp_sensor, ip, history, maxTemp):
 
     app.run(host='0.0.0.0', port=80, debug=False)
 
-def run_async(sensor, ip, history, maxTemp):
+def run_async(sensor, ip, history):
     p = multiprocessing.Process(target=run, args=(sensor, ip, history))
     p.start()
 
