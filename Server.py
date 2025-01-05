@@ -22,11 +22,12 @@ def temp():
 @app.route("/maxTemp")   
 def maxTemp():
     global server_maxTemp
-    if server_maxTemp < sensor.get_temperature():
-       print("max teplota: ", str(server_maxTemp)," nahrazena:", sensor.get_temperature()) >> server.txt
-       server_maxTemp=sensor.get_temperature()
-    print("max teplota je: ", str(server_maxTemp)) >> server.txt
-    return str(maxTemp)
+    with open("server.txt", 'a') as filelog:
+        if server_maxTemp < sensor.get_temperature():
+            filelog.write("max teplota: ", str(server_maxTemp)," nahrazena:", sensor.get_temperature())
+            server_maxTemp=sensor.get_temperature()
+    filelog.write("max teplota je: ", str(server_maxTemp))
+    return str(server_maxTemp)
     
 @app.route("/reboot")
 def reboot_server():
