@@ -23,9 +23,9 @@ def temp():
 def maxTemp():
     global server_maxTemp
     if server_maxTemp < sensor.get_temperature():
-       print("max teplota: ", str(server_maxTemp)," nahrazena:", sensor.get_temperature())
+       print("max teplota: ", str(server_maxTemp)," nahrazena:", sensor.get_temperature()) >> server.txt
        server_maxTemp=sensor.get_temperature()
-    print("max teplota je: ", str(server_maxTemp))
+    print("max teplota je: ", str(server_maxTemp)) >> server.txt
     return str(maxTemp)
     
 @app.route("/reboot")
@@ -44,11 +44,10 @@ def shutdown_server():
     return redirect("/")
 
 def run(tmp_sensor, ip, history):
-    global sensor, tmp_history, max_Temp
+    global sensor, tmp_history
     tmp_history = history
     sensor = tmp_sensor
-    max_Temp = maxTemp
-
+    
     app.run(host='0.0.0.0', port=80, debug=False)
 
 def run_async(sensor, ip, history):
