@@ -7,7 +7,7 @@ app = Flask('Kotel server')
 
 sensor = None
 tmp_history = []
-global server_maxTemp = None
+global server_maxTemp = 0
 
 @app.route("/")
 def index():
