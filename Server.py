@@ -7,12 +7,13 @@ app = Flask('Kotel server')
 
 sensor = None
 tmp_history = []
-maxTemp = None
+global server_maxTemp = None
 
 @app.route("/")
 def index():
     global history, max_Temp
-    return render_template('main.html', temp=sensor.get_temperature(), len=len(tmp_history[:]), history=tmp_history[:], maxTemp=max_Temp)
+    return render_template('main.html', temp=sensor.get_temperature(), len=len(tmp_history[:]), history=tmp_history[:], maxTemp=server_maxTemp)
+
 
 @app.route("/temp")
 def temp():
@@ -20,8 +21,12 @@ def temp():
 
 @app.route("/maxTemp")   
 def maxTemp():
-    global max_Temp
-    return str(max_Temp)
+    global server_maxTemp
+    if server_maxTemp < sensor.get_temperature():
+       print("max teplota: ", str(server_maxTemp)," nahrazena:", sensor.get_temperature())
+       server_maxTemp=sensor.get_temperature()
+    print("max teplota je: ", str(server_maxTemp))
+    return str(maxTemp)
     
 @app.route("/reboot")
 def reboot_server():
@@ -47,7 +52,7 @@ def run(tmp_sensor, ip, history, maxTemp):
     app.run(host='0.0.0.0', port=80, debug=False)
 
 def run_async(sensor, ip, history, maxTemp):
-    p = multiprocessing.Process(target=run, args=(sensor, ip, history, maxTemp ))
+    p = multiprocessing.Process(target=run, args=(sensor, ip, history))
     p.start()
 
 

@@ -181,7 +181,7 @@ if __name__ == '__main__':
     time.sleep(0.25)
     sirena.low() #siren_relay.off()
     print("Konec testu sirény")
-    Server.run_async(tmp_sensor, ip, history, maxTemp)
+    Server.run_async(tmp_sensor, ip, history)
     # Server.run_remote(tmp_sensor, url=remote_url, key=remote_key)
     main()
 
