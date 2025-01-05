@@ -24,9 +24,11 @@ def maxTemp():
     global server_maxTemp
     with open("server.txt", 'a') as filelog:
         if server_maxTemp < sensor.get_temperature():
-            filelog.write("max teplota: ", str(server_maxTemp)," nahrazena:", sensor.get_temperature())
+            text="max teplota:", str(server_maxTemp)," nahrazena: ", str(sensor.get_temperature())
+            filelog.write(text)
             server_maxTemp=sensor.get_temperature()
-    filelog.write("max teplota je: ", str(server_maxTemp))
+    text="max teplota je: ", str(server_maxTemp)
+    filelog.write(text)
     return str(server_maxTemp)
     
 @app.route("/reboot")
