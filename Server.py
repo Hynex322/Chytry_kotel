@@ -43,7 +43,7 @@ def shutdown_server():
     os.system('(sleep 1 && shutdown now &)')
     return redirect("/")
 
-def run(tmp_sensor, ip, history, maxTemp):
+def run(tmp_sensor, ip, history):
     global sensor, tmp_history, max_Temp
     tmp_history = history
     sensor = tmp_sensor
