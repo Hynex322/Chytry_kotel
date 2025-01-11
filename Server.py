@@ -11,8 +11,8 @@ server_maxTemp = 0
 
 @app.route("/")
 def index():
-    global history, max_Temp
-    return render_template('main.html', temp=sensor.get_temperature(), len=len(tmp_history[:]), history=tmp_history[:], maxTemp=server_maxTemp)
+    global history, maxTemp
+    return render_template('main.html', temp=sensor.get_temperature(), len=len(tmp_history[:]), history=tmp_history[:], server_maxTemp=maxTemp)
 
 
 @app.route("/temp")
@@ -21,15 +21,8 @@ def temp():
 
 @app.route("/maxTemp")   
 def maxTemp():
-    global server_maxTemp
-    with open("server.txt", 'a') as filelog:
-        if server_maxTemp < sensor.get_temperature():
-            text="max teplota:", str(server_maxTemp)," nahrazena: ", str(sensor.get_temperature())
-            filelog.write(text)
-            server_maxTemp=sensor.get_temperature()
-    text="max teplota je: ", str(server_maxTemp)
-    filelog.write(text)
-    return str(server_maxTemp)
+    global maxTemp
+    return str(maxTemp)
     
 @app.route("/reboot")
 def reboot_server():
