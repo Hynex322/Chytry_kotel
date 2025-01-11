@@ -222,8 +222,8 @@
             update_lock = false;
 
             if (obj.status == 200) {
-                var t = obj.responseText;
-                t = Math.round(parseFloat(t) * 10) / 10;
+                var maxTemper = obj.responseText;
+                maxTemper = Math.round(parseFloat(t) * 10) / 10;
                 update_element('tempMax-label', maxTemper);                
             }
         }
