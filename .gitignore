@@ -1,3 +1,10 @@
 RPi/GPIO.py
 RPi/__pycache__/GPIO.cpython-36.pyc
 sys/bus/w1/devices/28-00000a10a10f/w1_slave
+.vscode/launch.json
+__pycache__/Button.cpython-310.pyc
+__pycache__/LedBar.cpython-310.pyc
+__pycache__/Relay.cpython-310.pyc
+__pycache__/Server.cpython-310.pyc
+__pycache__/Temperature.cpython-310.pyc
+RPi/__pycache__/GPIO.cpython-310.pyc
