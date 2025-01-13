@@ -19,8 +19,8 @@ def index():
 def temp():
     return str(sensor.get_temperature())
 
-@app.route("/maxTemp")   
-def maxTemp():
+@app.route("/maxTempF")   
+def maxTempF():
     global maxTemp
     return str(maxTemp)
     
