@@ -195,8 +195,9 @@
             if (update_lock) { return; }
             update_lock = true;
 
-            ajax("/temp", "get", update_ajax);
             ajax("/maxTemp", "get", update_ajax_maxTemp);
+            ajax("/temp", "get", update_ajax);
+            
         }
 
         var alarmed = false;
@@ -214,13 +215,7 @@
                 } else if (alarmed && t < 90) {
                     alarmed = false;
                     stop_alarm();
-                }
-                var maxTemper = obj.responseText;
-                maxTemper = Math.round(parseFloat(t) * 10) / 10;
-                if (maxTemper < t){
-                    maxTemper = t;  
-                }              
-                update_element('tempMax-label', maxTemper);
+                }            
             }
         }
         function update_ajax_maxTemp(obj)
