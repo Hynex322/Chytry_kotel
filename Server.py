@@ -13,10 +13,10 @@ server_maxTemp = None
 def index():
     global history, maxTemp
     return render_template(
-        'main.html',
-        temp=sensor.get_temperature(),
-        len=len(tmp_history[:]),
-        history=tmp_history[:],
+        'main.html', 
+        temp=sensor.get_temperature(), 
+        len=len(tmp_history[:]), 
+        history=tmp_history[:], 
         server_maxTemp=maxTemp.value) # Čtení sdílené proměnné
 
 
