@@ -248,9 +248,14 @@
             var color = mix("ff0000", "FFED00", percentage, 40);
             document.getElementById("bar-in").style = "width: "+percentage+"%; background-color: " + color;
 
-            if(prvni_spusteni){
+            if(prvni_spusteni){                
                 for (var i = 0; i < historie.length; i++) {
-                    var el = createElementFromHTML("<div class='column' style='height: "+percentage+"%'><div class='in' style='background-color:" + color+"'></div>"+temperature+" °C</div>");
+                    update_element('temp-label', historie[i]);
+                    var percentage_list = (historie[i]).clamp(0, 100);
+                    var color_list = mix("ff0000", "FFED00", percentage_list, 40);
+                    document.getElementById("bar-in").style = "width: "+percentage_list+"%; background-color: " + color_list;
+
+                    var el = createElementFromHTML("<div class='column' style='height: "+percentage_list+"%'><div class='in' style='background-color:" + color_list+"'></div>"+historie[i]+" °C</div>");
                     document.getElementById("graph").appendChild(el);
                     iterated += 1;
                     graph_columns += 1;
