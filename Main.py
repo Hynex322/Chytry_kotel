@@ -50,10 +50,10 @@ yellowLed = Pin(yellowLed_pin)
 siren_ontime = 0
 bar = LedBar(bar_pins, temp_bounds)
 siren_stop_btn = Button(17, 27)
-history = Array('d', HISTORYlEN)
 # Vytvoříme Manager pro sdílenou paměť
 manager = Manager()
 maxTemp = manager.Value('d', 0)  # 'd' znamená double (desetinné číslo)
+history = manager.list()
 
 # turn off the relay
 Pin(26).low()
@@ -88,7 +88,7 @@ def Decline_alert():
 # program loop
 def main():
     
-    global siren_ontime, maxTemp
+    global siren_ontime, maxTemp, history
     posledni_maxTemp=0
     pressed_for = 0
     blik_i = 0
@@ -111,7 +111,7 @@ def main():
         bar.display(temperature)
 
         if maxTemp.value < temperature:
-            maxTemp.value = temperature
+            maxTemp.value = round(temperature, 1)
             print("Nová maximální hodnota: ", maxTemp.value)
 
         if posledni_maxTemp < temperature:
@@ -147,12 +147,12 @@ def main():
         odpocet += check_delay
 
         if odpocet >= PERIODhISTORY:
-            for i in range(HISTORYlEN-1):
-                history[i] = history[i+1]
-            history[HISTORYlEN-1] = round(temperature, 1)
+            history.append(round(temperature, 1))  # Přidáme novou hodnotu
+            if len(history) > 10:
+                history.pop(0)  # Omezíme délku na 10 prvků
             odpocet = 0
 
-        print("History: ", history[:])
+        print("History:", list(history))  # Výpis historie
 
         if (not roztopen_kotel) and (temperature > TEPLOTA_ROZTOPENO):
             roztopen_kotel = 1
