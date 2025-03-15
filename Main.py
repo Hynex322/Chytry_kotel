@@ -7,7 +7,8 @@ from LedBar import LedBar
 from Button import Button
 import Server
 from Pin import Pin
-from multiprocessing import Array
+from multiprocessing import Array,Manager
+
 import threading
 
 # gpio w1 init
@@ -50,7 +51,9 @@ siren_ontime = 0
 bar = LedBar(bar_pins, temp_bounds)
 siren_stop_btn = Button(17, 27)
 history = Array('d', HISTORYlEN)
-maxTemp = 0
+# Vytvoříme Manager pro sdílenou paměť
+manager = Manager()
+maxTemp = manager.Value('d', 0)  # 'd' znamená double (desetinné číslo)
 
 # turn off the relay
 Pin(26).low()
@@ -107,9 +110,9 @@ def main():
 
         bar.display(temperature)
 
-        if maxTemp < temperature:
-            maxTemp = temperature
-            print("Nová maximální hodnota: ", maxTemp)
+        if maxTemp.value < temperature:
+            maxTemp.value = temperature
+            print("Nová maximální hodnota: ", maxTemp.value)
 
         if posledni_maxTemp < temperature:
             posledni_maxTemp = temperature
@@ -181,7 +184,7 @@ if __name__ == '__main__':
     time.sleep(0.25)
     sirena.low() #siren_relay.off()
     print("Konec testu sirény")
-    Server.run_async(tmp_sensor, ip, history)
+    Server.run_async(tmp_sensor, ip, history, maxTemp)
     # Server.run_remote(tmp_sensor, url=remote_url, key=remote_key)
     main()
 

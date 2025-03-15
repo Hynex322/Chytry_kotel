@@ -7,12 +7,17 @@ app = Flask('Kotel server')
 
 sensor = None
 tmp_history = []
-server_maxTemp = 0
+server_maxTemp = None
 
 @app.route("/")
 def index():
     global history, maxTemp
-    return render_template('main.html', temp=sensor.get_temperature(), len=len(tmp_history[:]), history=tmp_history[:], server_maxTemp=maxTemp)
+    return render_template(
+        'main.html',
+        temp=sensor.get_temperature(),
+        len=len(tmp_history[:]),
+        history=tmp_history[:],
+        server_maxTemp=maxTemp.value) # Čtení sdílené proměnné
 
 
 @app.route("/temp")
@@ -22,7 +27,7 @@ def temp():
 @app.route("/maxTemp")   
 def maxTemp():
     global maxTemp
-    return str(maxTemp)
+    return str(maxTemp.value)
     
 @app.route("/reboot")
 def reboot_server():
@@ -39,15 +44,16 @@ def shutdown_server():
     os.system('(sleep 1 && shutdown now &)')
     return redirect("/")
 
-def run(tmp_sensor, ip, history):
-    global sensor, tmp_history
+def run(tmp_sensor, ip, history, max_temp):
+    global sensor, tmp_history, server_maxTemp
     tmp_history = history
     sensor = tmp_sensor
-    
+    server_maxTemp = max_temp  # Sdílená proměnná
+
     app.run(host='0.0.0.0', port=80, debug=False)
 
-def run_async(sensor, ip, history):
-    p = multiprocessing.Process(target=run, args=(sensor, ip, history))
+def run_async(sensor, ip, history, max_temp):
+    p = multiprocessing.Process(target=run, args=(sensor, ip, history, max_temp))
     p.start()
 
 
@@ -65,3 +71,4 @@ def remote_worker(sensor, url, key):
 def run_remote(sensor, url, key):
     p = multiprocessing.Process(target=remote_worker, args=(sensor, url, key,))
     p.start()
+    return p
