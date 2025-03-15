@@ -227,7 +227,8 @@
             if (obj.status == 200) {
                 var maxTemper = obj.responseText;
             //    alert("MaxTemper" + maxTemper);
-                maxTemper = Math.round(parseFloat(t) * 10) / 10;
+                maxTemper = Math.round(parseFloat(maxTemper) * 10) / 10;
+                alert("volam update_element"+ maxTemper);
                 update_element('tempMax-label', maxTemper);                
             }
         }
@@ -262,7 +263,8 @@
                 }
                 prvni_spusteni=false;
             }
-            if (iterated % 36 == 0 || iterated < 10) {
+            if (iterated % 24 == 0 || iterated < 10) // interval načítání novych sloupcu 10 vterin * (%24)/60 = 4 minuty
+            {
                 var el = createElementFromHTML("<div class='column' style='height: "+percentage+"%'><div class='in' style='background-color:" + color+"'></div>"+temperature+" °C</div>");
                 document.getElementById("graph").appendChild(el);
                 graph_columns += 1;

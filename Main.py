@@ -24,7 +24,7 @@ press_for_turnoff = 50  # times btn is pressed to turnoff
 lowBound  = 40
 FALLaLARM = 2
 HISTORYlEN = 10
-PERIODhISTORY = 60 # ve vterinach, vzdalenost zaznamu 
+PERIODhISTORY = 120 # ve vterinach, vzdalenost zaznamu 
 TEPLOTA_ROZTOPENO = 50 #°C #Hranice od kdy se aktivuje automatickemu vypnuti
 LIMIT_VYPNUTI = 30     #°C #Hranice automatickeho vypnuti
 
