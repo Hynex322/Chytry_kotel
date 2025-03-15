@@ -36,8 +36,9 @@ def reboot_server():
 
 @app.route("/update")
 def update():
-    VystupUpdate = subprocess.check_output("sudo git pull", shell=True, text=True)  
-    return f"{VystupUpdate}</pre><br><br><a href='/'>Zpět</a> <a href='/reboot'>Reboot</a>"
+    VystupUpdate = subprocess.check_output("sudo git pull", shell=True, text=True)
+    return render_template('update.html', output=VystupUpdate)
+    #return f"{VystupUpdate}</pre><br><br><a href='/'>Zpět</a> <a href='/reboot'>Reboot</a>"
     
 @app.route("/shutdown")
 def shutdown_server():

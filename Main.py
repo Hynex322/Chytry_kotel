@@ -164,9 +164,17 @@ def main():
                 else:
                     print("kotel se vypne ",ii)
             if ii == 5:
-                sirena.high()
-                time.sleep(2.0)
-                sirena.low()
+                sirena.high() #siren_relay.on()
+                time.sleep(0.1)
+                sirena.low() #siren_relay.off()
+                time.sleep(0.1)
+                sirena.high() #siren_relay.on()
+                time.sleep(0.1)
+                sirena.low() #siren_relay.off()
+                time.sleep(0.1)
+                sirena.high() #siren_relay.on()
+                time.sleep(0.1)
+                sirena.low() #siren_relay.off()
                 print("vypinam kotel")
                 time.sleep(120.0) #zpozdeni kdyby se nekde stala chyba
                 ShutDown()
