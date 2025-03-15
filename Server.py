@@ -1,6 +1,7 @@
 from flask import Flask, redirect, render_template, url_for
 import multiprocessing
 import os
+import subprocess
 #from Temperature import TemperatureSensor
 
 app = Flask('Kotel server')
@@ -35,12 +36,13 @@ def reboot_server():
 
 @app.route("/update")
 def update():
-    os.system('sudo git pull &')
-    return redirect("/")
+    VystupUpdate = subprocess.check_output("sudo git pull", shell=True, text=True)  
+    return (VystupUpdate)
     
 @app.route("/shutdown")
 def shutdown_server():
     os.system('(sleep 1 && shutdown now &)')
+    
     return redirect("/")
 
 def run(tmp_sensor, ip, history, max_temp):
