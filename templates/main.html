@@ -234,6 +234,8 @@
 
         var iterated = 0;
         var graph_columns = 0;
+        var delka_historie = {{ len }};
+        alert(delka_historie);
         function update_temperature(temperature)
         {
             update_element('temp-label', temperature);
@@ -241,13 +243,13 @@
             var color = mix("ff0000", "FFED00", percentage, 40);
             document.getElementById("bar-in").style = "width: "+percentage+"%; background-color: " + color;
 
-            if (iterated % 36 == 0 || iterated < 10) {
+            /*if (iterated % 36 == 0 || iterated < 10) {
                 var el = createElementFromHTML("<div class='column' style='height: "+percentage+"%'><div class='in' style='background-color:" + color+"'></div>"+temperature+" °C</div>");
                 document.getElementById("graph").appendChild(el);
                 graph_columns += 1;
                 if (graph_columns > 10) {
                     document.getElementById("graph").children[0].remove();
-                }
+                }*/
             }
             
             iterated += 1;

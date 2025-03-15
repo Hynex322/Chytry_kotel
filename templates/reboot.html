@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Systém se restartuje</title>
-    <meta http-equiv="refresh" content="120;url=/">
+    <meta http-equiv="refresh" content="100;url=/">
     <style>
         body {
             display: flex;
@@ -14,6 +14,7 @@
             height: 100vh;
             background-color: #f8f9fa;
             font-family: Arial, sans-serif;
+            font-size: xx-large;
         }
         h1 {
             font-size: 2rem;
@@ -26,10 +27,10 @@
         }
     </style>
     <script>
-        let timeLeft = 120;
+        let timeLeft = 100;
         function updateProgressBar() {
             let progressBar = document.getElementById("progressBar");
-            progressBar.value = 120 - timeLeft;
+            progressBar.value = 100 - timeLeft;
             timeLeft--;
             if (timeLeft >= 0) {
                 setTimeout(updateProgressBar, 1000);
@@ -40,6 +41,6 @@
 </head>
 <body>
     <h1>Systém se restartuje... Prosím, počkejte.</h1>
-    <progress id="progressBar" max="120" value="0"></progress>
+    <progress id="progressBar" max="100" value="0"></progress>
 </body>
 </html>
