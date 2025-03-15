@@ -24,7 +24,7 @@ press_for_turnoff = 50  # times btn is pressed to turnoff
 lowBound  = 40
 FALLaLARM = 2
 HISTORYlEN = 10
-PERIODhISTORY = 60 # ve vterinach, vzdalenost zaznamu 
+PERIODhISTORY = 120 # ve vterinach, vzdalenost zaznamu 
 TEPLOTA_ROZTOPENO = 50 #°C #Hranice od kdy se aktivuje automatickemu vypnuti
 LIMIT_VYPNUTI = 30     #°C #Hranice automatickeho vypnuti
 
@@ -50,10 +50,10 @@ yellowLed = Pin(yellowLed_pin)
 siren_ontime = 0
 bar = LedBar(bar_pins, temp_bounds)
 siren_stop_btn = Button(17, 27)
-history = Array('d', HISTORYlEN)
 # Vytvoříme Manager pro sdílenou paměť
 manager = Manager()
 maxTemp = manager.Value('d', 0)  # 'd' znamená double (desetinné číslo)
+history = manager.list()
 
 # turn off the relay
 Pin(26).low()
@@ -88,7 +88,7 @@ def Decline_alert():
 # program loop
 def main():
     
-    global siren_ontime, maxTemp
+    global siren_ontime, maxTemp, history
     posledni_maxTemp=0
     pressed_for = 0
     blik_i = 0
@@ -111,7 +111,7 @@ def main():
         bar.display(temperature)
 
         if maxTemp.value < temperature:
-            maxTemp.value = temperature
+            maxTemp.value = round(temperature, 1)
             print("Nová maximální hodnota: ", maxTemp.value)
 
         if posledni_maxTemp < temperature:
@@ -147,12 +147,12 @@ def main():
         odpocet += check_delay
 
         if odpocet >= PERIODhISTORY:
-            for i in range(HISTORYlEN-1):
-                history[i] = history[i+1]
-            history[HISTORYlEN-1] = round(temperature, 1)
+            history.append(round(temperature, 1))  # Přidáme novou hodnotu
+            if len(history) > 10:
+                history.pop(0)  # Omezíme délku na 10 prvků
             odpocet = 0
 
-        print("History: ", history[:])
+        print("History:", list(history))  # Výpis historie
 
         if (not roztopen_kotel) and (temperature > TEPLOTA_ROZTOPENO):
             roztopen_kotel = 1
@@ -164,9 +164,17 @@ def main():
                 else:
                     print("kotel se vypne ",ii)
             if ii == 5:
-                sirena.high()
-                time.sleep(2.0)
-                sirena.low()
+                sirena.high() #siren_relay.on()
+                time.sleep(0.1)
+                sirena.low() #siren_relay.off()
+                time.sleep(0.1)
+                sirena.high() #siren_relay.on()
+                time.sleep(0.1)
+                sirena.low() #siren_relay.off()
+                time.sleep(0.1)
+                sirena.high() #siren_relay.on()
+                time.sleep(0.1)
+                sirena.low() #siren_relay.off()
                 print("vypinam kotel")
                 time.sleep(120.0) #zpozdeni kdyby se nekde stala chyba
                 ShutDown()

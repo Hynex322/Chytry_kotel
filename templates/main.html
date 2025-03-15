@@ -187,6 +187,7 @@
         function start_listening()
         {
             window.setInterval(update, 10000);
+            update();
         }
 
         var update_lock = false;
@@ -195,8 +196,9 @@
             if (update_lock) { return; }
             update_lock = true;
 
-            ajax("/temp", "get", update_ajax);
             ajax("/maxTemp", "get", update_ajax_maxTemp);
+            ajax("/temp", "get", update_ajax);
+            
         }
 
         var alarmed = false;
@@ -214,16 +216,18 @@
                 } else if (alarmed && t < 90) {
                     alarmed = false;
                     stop_alarm();
-                }
+                }            
             }
         }
         function update_ajax_maxTemp(obj)
-        {
+        {   
+            //alert("spustil se update_ajax_maxTemp");
             update_lock = false;
 
             if (obj.status == 200) {
                 var maxTemper = obj.responseText;
-                maxTemper = Math.round(parseFloat(t) * 10) / 10;
+            //    alert("MaxTemper" + maxTemper);
+                maxTemper = Math.round(parseFloat(maxTemper) * 10) / 10;                
                 update_element('tempMax-label', maxTemper);                
             }
         }
@@ -231,6 +235,12 @@
 
         var iterated = 0;
         var graph_columns = 0;
+        var delka_historie = {{ len }};
+        var historie = {{ history|tojson }};
+        var prvni_spusteni=true;
+        console.log(historie);
+        console.log(delka_historie);
+
         function update_temperature(temperature)
         {
             update_element('temp-label', temperature);
@@ -238,7 +248,22 @@
             var color = mix("ff0000", "FFED00", percentage, 40);
             document.getElementById("bar-in").style = "width: "+percentage+"%; background-color: " + color;
 
-            if (iterated % 36 == 0 || iterated < 10) {
+            if(prvni_spusteni){                
+                for (var i = 0; i < historie.length; i++) {
+                    update_element('temp-label', historie[i]);
+                    var percentage_list = (historie[i]).clamp(0, 100);
+                    var color_list = mix("ff0000", "FFED00", percentage_list, 40);
+                    document.getElementById("bar-in").style = "width: "+percentage_list+"%; background-color: " + color_list;
+
+                    var el = createElementFromHTML("<div class='column' style='height: "+percentage_list+"%'><div class='in' style='background-color:" + color_list+"'></div>"+historie[i]+" °C</div>");
+                    document.getElementById("graph").appendChild(el);
+                    iterated += 1;
+                    graph_columns += 1;
+                }
+                prvni_spusteni=false;
+            }
+            if (iterated % 24 == 0 || iterated < 10) // interval načítání novych sloupcu 10 vterin * (%24)/60 = 4 minuty
+            {
                 var el = createElementFromHTML("<div class='column' style='height: "+percentage+"%'><div class='in' style='background-color:" + color+"'></div>"+temperature+" °C</div>");
                 document.getElementById("graph").appendChild(el);
                 graph_columns += 1;
@@ -246,7 +271,6 @@
                     document.getElementById("graph").children[0].remove();
                 }
             }
-            
             iterated += 1;
         }
 

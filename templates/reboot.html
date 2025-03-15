@@ -4,23 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Systém se restartuje</title>
-    <meta http-equiv="refresh" content="90;url=main.html">
+    <meta http-equiv="refresh" content="90;url=/">
     <style>
         body {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             background-color: #f8f9fa;
             font-family: Arial, sans-serif;
+            font-size: xx-large;
         }
         h1 {
             font-size: 2rem;
             color: #333;
+            margin-bottom: 20px;
+        }
+        progress {
+            width: 80%;
+            height: 20px;
         }
     </style>
+    <script>
+        let timeLeft = 90;
+        function updateProgressBar() {
+            let progressBar = document.getElementById("progressBar");
+            progressBar.value = 90 - timeLeft;
+            timeLeft--;
+            if (timeLeft >= 0) {
+                setTimeout(updateProgressBar, 1000);
+            }
+        }
+        window.onload = updateProgressBar;
+    </script>
 </head>
 <body>
     <h1>Systém se restartuje... Prosím, počkejte.</h1>
+    <progress id="progressBar" max="90" value="0"></progress>
 </body>
 </html>
