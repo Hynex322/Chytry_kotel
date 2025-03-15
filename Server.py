@@ -26,8 +26,7 @@ def temp():
 
 @app.route("/maxTemp")   
 def maxTemp():
-    global maxTemp
-    return str(maxTemp.value)
+    return str(server_maxTemp.value)
     
 @app.route("/reboot")
 def reboot_server():
