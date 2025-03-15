@@ -217,7 +217,9 @@
                 }
                 var maxTemper = obj.responseText;
                 maxTemper = Math.round(parseFloat(t) * 10) / 10;
-                if (maxTemper < t) maxTemper = t;               
+                if (maxTemper < t){
+                    maxTemper = t;  
+                }              
                 update_element('tempMax-label', maxTemper);
             }
         }
