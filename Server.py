@@ -11,13 +11,13 @@ server_maxTemp = None
 
 @app.route("/")
 def index():
-    global history, maxTemp
+    global history, server_maxTemp
     return render_template(
         'main.html', 
         temp=sensor.get_temperature(), 
         len=len(tmp_history[:]), 
         history=tmp_history[:], 
-        server_maxTemp=maxTemp.value) # Čtení sdílené proměnné
+        server_maxTemp=server_maxTemp.value) # Čtení sdílené proměnné
 
 
 @app.route("/temp")
