@@ -32,7 +32,7 @@ def maxTemp():
 def reboot_server():
     os.system(' (sleep 1 && reboot) & ')
     #return redirect("/templates/reboot")
-    render_template('reboot.html')
+    render_template('/reboot.html')
 
 @app.route("/update")
 def update():
