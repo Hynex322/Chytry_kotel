@@ -236,6 +236,7 @@
         var graph_columns = 0;
         var delka_historie = {{ len }};
         var historie = {{ history|tojson }};
+        var prvni_spusteni=true;
         console.log(historie);
         console.log(delka_historie);
 
@@ -246,25 +247,23 @@
             var color = mix("ff0000", "FFED00", percentage, 40);
             document.getElementById("bar-in").style = "width: "+percentage+"%; background-color: " + color;
 
-            /*if (iterated % 36 == 0 || iterated < 10) {
+            if(prvni_spusteni){
+                for (var i = 0; i < historie.length; i++) {
+                    var el = createElementFromHTML("<div class='column' style='height: "+percentage+"%'><div class='in' style='background-color:" + color+"'></div>"+temperature+" °C</div>");
+                    document.getElementById("graph").appendChild(el);
+                    iterated += 1;
+                    graph_columns += 1;
+                }
+                prvni_spusteni=false;
+            }
+            if (iterated % 36 == 0 || iterated < 10) {
                 var el = createElementFromHTML("<div class='column' style='height: "+percentage+"%'><div class='in' style='background-color:" + color+"'></div>"+temperature+" °C</div>");
                 document.getElementById("graph").appendChild(el);
                 graph_columns += 1;
                 if (graph_columns > 10) {
                     document.getElementById("graph").children[0].remove();
                 }
-            }*/
-            for (var i = 0; i < historie.length; i++) {
-                var column = document.createElement("div"); // Vytvoří nový div element
-                column.classList.add("column"); // Přidá CSS třídu pro stylování
-
-                var inDiv = document.createElement("div"); // Vytvoří vnořený div
-                inDiv.classList.add("in"); // Přidá CSS třídu pro stylování
-                inDiv.style.height = historie[i] + "%"; // Nastaví výšku podle hodnoty v historie
-
-                column.appendChild(inDiv); // Přidá vnořený div do sloupce
-                container.appendChild(column); // Přidá sloupec do hlavního kontejneru
-}
+            }
             iterated += 1;
         }
 
