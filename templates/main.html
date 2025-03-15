@@ -227,8 +227,7 @@
             if (obj.status == 200) {
                 var maxTemper = obj.responseText;
             //    alert("MaxTemper" + maxTemper);
-                maxTemper = Math.round(parseFloat(maxTemper) * 10) / 10;
-                alert("volam update_element"+ maxTemper);
+                maxTemper = Math.round(parseFloat(maxTemper) * 10) / 10;                
                 update_element('tempMax-label', maxTemper);                
             }
         }
