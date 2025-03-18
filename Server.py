@@ -9,16 +9,18 @@ app = Flask('Kotel server')
 sensor = None
 server_history = None  # Sdílená historie
 server_maxTemp = None
+server_averageTemp = None
 
 @app.route("/")
 def index():
-    global server_history, server_maxTemp
+    global server_history, server_maxTemp, server_averageTemp
     return render_template(
         'main.html', 
         temp=sensor.get_temperature(), 
         len=len(server_history), 
         history=list(server_history),  # Převod sdíleného seznamu na běžný seznam
-        server_maxTemp=server_maxTemp.value) # Čtení sdílené proměnné
+        server_maxTemp=server_maxTemp.value,
+        avgTemp= server_averageTemp.value) # Čtení sdílené proměnné
 
 
 @app.route("/temp")
@@ -28,6 +30,10 @@ def temp():
 @app.route("/maxTemp")   
 def maxTemp():
     return str(server_maxTemp.value)
+
+@app.route("/avgTemp")   
+def maxTemp():
+    return str(server_averageTemp.value)
     
 @app.route("/reboot")
 def reboot_server():
@@ -46,16 +52,17 @@ def shutdown_server():
     
     return redirect("/")
 
-def run(tmp_sensor, ip, history, max_temp):
-    global sensor, server_history, server_maxTemp
+def run(tmp_sensor, ip, history, max_temp, averageTemp):
+    global sensor, server_history, server_maxTemp, server_averageTemp
     sensor = tmp_sensor
     server_history = history
     server_maxTemp = max_temp  # Sdílená proměnná
+    server_averageTemp = averageTemp
 
     app.run(host='0.0.0.0', port=80, debug=False)
 
-def run_async(sensor, ip, history, max_temp):
-    p = multiprocessing.Process(target=run, args=(sensor, ip, history, max_temp))
+def run_async(sensor, ip, history, max_temp, averageTemp):
+    p = multiprocessing.Process(target=run, args=(sensor, ip, history, max_temp, averageTemp))
     p.start()
     return p
 

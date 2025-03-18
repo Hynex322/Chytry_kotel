@@ -1,5 +1,6 @@
 from pickle import FALSE
 import time
+import schedule
 from Temperature import TemperatureSensor
 from Relay import Relay
 import os
@@ -50,9 +51,11 @@ yellowLed = Pin(yellowLed_pin)
 siren_ontime = 0
 bar = LedBar(bar_pins, temp_bounds)
 siren_stop_btn = Button(17, 27)
+history_60 = []  #list pro vypocet prumeru za 60 minut
 # Vytvoříme Manager pro sdílenou paměť
 manager = Manager()
 maxTemp = manager.Value('d', 0)  # 'd' znamená double (desetinné číslo)
+averageTemp = manager.Value('d', 0)
 history = manager.list()
 
 # turn off the relay
@@ -85,9 +88,16 @@ def Decline_alert():
     time.sleep(0.3)
     sirena.low() #siren_relay.off()
 
+def PrumerTeploty():
+    history_60.append(round( tmp_sensor.get_temperature(), 1))  # Přidáme novou hodnotu
+    if len(history_60) > 60:
+        history_60.pop(0)  # Omezíme délku na 60 prvků
+    averageTemp = sum(history_60) / len(history_60)
+#definice jak casto se spusti ulozeni prumerne teploty
+schedule.every().minute.do(PrumerTeploty)
+       
 # program loop
 def main():
-    
     global siren_ontime, maxTemp, history
     posledni_maxTemp=0
     pressed_for = 0
@@ -97,6 +107,8 @@ def main():
     while True:
         temperature = tmp_sensor.get_temperature()
         print("[teplota]", temperature)
+
+        schedule.run_pending()  # Zkontroluje, zda je čas na spuštění úlohy
 
         if temperature >= temp_warn:
             Start_alarm()
@@ -192,7 +204,7 @@ if __name__ == '__main__':
     time.sleep(0.25)
     sirena.low() #siren_relay.off()
     print("Konec testu sirény")
-    Server.run_async(tmp_sensor, ip, history, maxTemp)
+    Server.run_async(tmp_sensor, ip, history, maxTemp, averageTemp)
     # Server.run_remote(tmp_sensor, url=remote_url, key=remote_key)
     main()
 
