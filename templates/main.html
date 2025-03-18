@@ -159,6 +159,7 @@
             <h1 style="margin: auto auto">Kotel</h1>
             Teplota: <span id="temp-label">{{ temp }}</span> °C<BR>
             Max. teplota: <span id="tempMax-label">{{ server_maxTemp }}</span> °C
+            Prum. teplota: <span id="tempAvg-label">{{ avgTemp }}</span> °C
             <div class="bar"><div class="inner" id="bar-in" style="width: 0%"></div></div>
             
             <BR>
@@ -197,6 +198,7 @@
             update_lock = true;
 
             ajax("/maxTemp", "get", update_ajax_maxTemp);
+            ajax("/avgTemp", "get", update_ajax_avgTemp);
             ajax("/temp", "get", update_ajax);
             
         }
@@ -229,6 +231,18 @@
             //    alert("MaxTemper" + maxTemper);
                 maxTemper = Math.round(parseFloat(maxTemper) * 10) / 10;                
                 update_element('tempMax-label', maxTemper);                
+            }
+        }
+        function update_ajax_avgTemp(obj)
+        {   
+            //alert("spustil se update_ajax_maxTemp");
+            update_lock = false;
+
+            if (obj.status == 200) {
+                var avgTemper = obj.responseText;
+            //    alert("MaxTemper" + maxTemper);
+                avgTemper = Math.round(parseFloat(avgTemper) * 10) / 10;                
+                update_element('tempAvg-label', avgTemper);                
             }
         }
 
