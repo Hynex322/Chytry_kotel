@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Systém se restartuje</title>
-    <meta http-equiv="refresh" content="90;url=/">
+    <meta http-equiv="refresh" content="90; url=/">
     <style>
         body {
             display: flex;
@@ -37,6 +37,22 @@
             }
         }
         window.onload = updateProgressBar;
+
+
+        function pingAndRedirect() {
+            fetch("http://192.168.1.112",
+        { mode: 'no-cors' }) // Pošle požadavek bez kontroly CORS
+                    .then(() => {
+                                window.location.href = "/"; // Přesměrování při odpovědi
+                                })
+                    .catch(() => {
+                             console.log("IP není dostupná.");
+                                 });
+        }
+                 
+        setInterval(pingAndRedirect, 1000); // Spustí se každé 1 sekundy
+
+
     </script>
 </head>
 <body>
