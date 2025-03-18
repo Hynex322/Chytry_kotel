@@ -37,6 +37,23 @@
             }
         }
         window.onload = updateProgressBar;
+
+
+        function pingAndRedirect() {
+            fetch("http://192.168.1.112",
+        { mode: 'no-cors' }) // Pošle požadavek bez kontroly CORS
+                    .then(() => {
+                                window.location.href = "/"; // Přesměrování při odpovědi
+                                        })
+                    .catch(() => {
+                             console.log("IP není dostupná.");
+                                        });
+                         }
+
+                                                               // Spustí se každé 3 sekundy
+        setInterval(pingAndRedirect, 1000);
+
+
     </script>
 </head>
 <body>
