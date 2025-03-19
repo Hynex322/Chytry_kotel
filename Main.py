@@ -146,7 +146,6 @@ def PrumerTeploty():
     global averageTemp, history_60
 
     temperature=tmp_sensor.get_temperature()
-    print("[teplota]", temperature)
     history_60.append(round(temperature , 1))  # Přidáme novou hodnotu
 
     if len(history_60) > 60:
