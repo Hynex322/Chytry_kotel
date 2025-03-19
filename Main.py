@@ -113,7 +113,7 @@ def main():
         temperature = tmp_sensor.get_temperature()
         #print("[teplota]", temperature)
 
-        schedule.run_pending()  # Zkontroluje, zda je čas na spuštění úlohy
+        #schedule.run_pending()  # Zkontroluje, zda je čas na spuštění úlohy
 
         if temperature >= temp_warn:
             Start_alarm()
