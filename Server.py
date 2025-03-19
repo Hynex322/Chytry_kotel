@@ -20,7 +20,7 @@ def index():
         len=len(server_history), 
         history=list(server_history),  # Převod sdíleného seznamu na běžný seznam
         server_maxTemp=server_maxTemp.value,
-        avgTemp= server_averageTemp.value) # Čtení sdílené proměnné
+        server_averageTemp= server_averageTemp.value) # Čtení sdílené proměnné
 
 
 @app.route("/temp")
