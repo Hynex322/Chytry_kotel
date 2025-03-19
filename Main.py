@@ -89,12 +89,15 @@ def Decline_alert():
     sirena.low() #siren_relay.off()
 
 def PrumerTeploty():
-    global averageTemp
+    global averageTemp, history_60
+    print("Spusten PrumerTeploty()")
+    print("hodnota history: ", list(history_60))
     temperature=tmp_sensor.get_temperature()
     history_60.append(round(temperature , 1))  # Přidáme novou hodnotu
     if len(history_60) > 60:
         history_60.pop(0)  # Omezíme délku na 60 prvků
     averageTemp = sum(history_60) / len(history_60)
+    print("hodnota averageTemp: ", averageTemp.value )
 #definice jak casto se spusti ulozeni prumerne teploty
 schedule.every().minute.do(PrumerTeploty)
        
@@ -108,7 +111,7 @@ def main():
     roztopen_kotel = 0
     while True:
         temperature = tmp_sensor.get_temperature()
-        print("[teplota]", temperature)
+        #print("[teplota]", temperature)
 
         schedule.run_pending()  # Zkontroluje, zda je čas na spuštění úlohy
 
@@ -126,15 +129,15 @@ def main():
 
         if maxTemp.value < temperature:
             maxTemp.value = round(temperature, 1)
-            print("Nová maximální hodnota: ", maxTemp.value)
+            #print("Nová maximální hodnota: ", maxTemp.value)
 
         if posledni_maxTemp < temperature:
             posledni_maxTemp = temperature
-            print("Nová posledni maximální hodnota: ", posledni_maxTemp)
+            #print("Nová posledni maximální hodnota: ", posledni_maxTemp)
         elif temperature < (posledni_maxTemp - FALLaLARM):
             Decline_alert()
             posledni_maxTemp = temperature
-            print("Maximální teplota byla snížena na: ", posledni_maxTemp)
+            #print("Maximální teplota byla snížena na: ", posledni_maxTemp)
          
         for _ in range(int(check_delay / .1)):
             if siren_stop_btn.get():
@@ -206,7 +209,7 @@ if __name__ == '__main__':
     time.sleep(0.25)
     sirena.low() #siren_relay.off()
     print("Konec testu sirény")
-    Server.run_async(tmp_sensor, ip, history, maxTemp, averageTemp)
+    #Server.run_async(tmp_sensor, ip, history, maxTemp, averageTemp)
     # Server.run_remote(tmp_sensor, url=remote_url, key=remote_key)
     main()
 
