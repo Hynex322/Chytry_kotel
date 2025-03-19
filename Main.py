@@ -92,6 +92,7 @@ def PrumerTeploty():
     global averageTemp, history_60
     print("Spusten PrumerTeploty()")
     print("hodnota history: ", list(history_60))
+    Decline_alert()
     temperature=tmp_sensor.get_temperature()
     history_60.append(round(temperature , 1))  # Přidáme novou hodnotu
     if len(history_60) > 60:
@@ -209,7 +210,7 @@ if __name__ == '__main__':
     time.sleep(0.25)
     sirena.low() #siren_relay.off()
     print("Konec testu sirény")
-    #Server.run_async(tmp_sensor, ip, history, maxTemp, averageTemp)
+    Server.run_async(tmp_sensor, ip, history, maxTemp, averageTemp)
     # Server.run_remote(tmp_sensor, url=remote_url, key=remote_key)
     main()
 
