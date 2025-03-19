@@ -89,6 +89,7 @@ def Decline_alert():
     sirena.low() #siren_relay.off()
 
 def PrumerTeploty():
+    global averageTemp
     history_60.append(round( tmp_sensor.get_temperature(), 1))  # Přidáme novou hodnotu
     if len(history_60) > 60:
         history_60.pop(0)  # Omezíme délku na 60 prvků
