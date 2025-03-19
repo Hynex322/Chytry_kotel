@@ -252,6 +252,7 @@
         var graph_columns = 0;
         var delka_historie = {{ len }};
         var historie = {{ history|tojson }};
+        var BLUE_LIMIT = 25;
         var prvni_spusteni=true;
         console.log(historie);
         console.log(delka_historie);
@@ -260,7 +261,7 @@
         {
             update_element('temp-label', temperature);
             var percentage = (temperature).clamp(0, 100);
-            if(percentage<25){
+            if(percentage<BLUE_LIMIT){
                 var color = "00008B";
             }
             else{
@@ -273,7 +274,12 @@
                 for (var i = 0; i < historie.length; i++) {
                     update_element('temp-label', historie[i]);
                     var percentage_list = (historie[i]).clamp(0, 100);
-                    var color_list = mix("ff0000", "FFED00", percentage_list, 40);
+                    if(percentage_list<BLUE_LIMIT){
+                       var color_list = "00008B";
+                    }
+                    else{
+                       var color_list = mix("ff0000", "FFED00", percentage_list, 40);
+                    }
                     document.getElementById("bar-in").style = "width: "+percentage_list+"%; background-color: " + color_list;
 
                     var el = createElementFromHTML("<div class='column' style='height: "+percentage_list+"%'><div class='in' style='background-color:" + color_list+"'></div>"+historie[i]+" °C</div>");
