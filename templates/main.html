@@ -260,7 +260,13 @@
         {
             update_element('temp-label', temperature);
             var percentage = (temperature).clamp(0, 100);
-            var color = mix("ff0000", "FFED00", percentage, 40);
+            if(percentage<25){
+                var color = "00008B";
+            }
+            else{
+                var color = mix("ff0000", "FFED00", percentage, 40);
+            }
+            
             document.getElementById("bar-in").style = "width: "+percentage+"%; background-color: " + color;
 
             if(prvni_spusteni){                
