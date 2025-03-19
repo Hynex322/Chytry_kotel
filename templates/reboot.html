@@ -50,9 +50,9 @@
                              console.log("IP není dostupná.");
                                  });
         }
-                 
-        setInterval(pingAndRedirect, 1000); // Spustí se každé 1 sekundy
-
+        setTimeout(() => {         
+            setInterval(pingAndRedirect, 1000); // Spustí se každé 1 sekundy
+        }, 5000);
 
     </script>
 </head>
