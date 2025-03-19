@@ -89,10 +89,21 @@ def Decline_alert():
     sirena.low() #siren_relay.off()
 
 def PrumerTeploty():
-    history_60.append(round( tmp_sensor.get_temperature(), 1))  # Přidáme novou hodnotu
+    global averageTemp, history_60
+    print("Spusten PrumerTeploty()")
+    print("hodnota history: ", list(history_60))
+    Decline_alert()
+    temperature=tmp_sensor.get_temperature()
+    print("[teplota]", temperature)
+    history_60.append(round(temperature , 1))  # Přidáme novou hodnotu
+    print("hodnota history po pridani: ", list(history_60))
     if len(history_60) > 60:
         history_60.pop(0)  # Omezíme délku na 60 prvků
-    averageTemp = sum(history_60) / len(history_60)
+        print("samazani 60 prvku history_60", list(history_60))
+    if len(history_60) > 0:
+        print("spusteni average tmp")
+        averageTemp.value = sum(history_60) / len(history_60)
+    print("hodnota averageTemp: ", averageTemp )
 #definice jak casto se spusti ulozeni prumerne teploty
 schedule.every().minute.do(PrumerTeploty)
        
@@ -106,7 +117,7 @@ def main():
     roztopen_kotel = 0
     while True:
         temperature = tmp_sensor.get_temperature()
-        print("[teplota]", temperature)
+        #print("[teplota]", temperature)
 
         schedule.run_pending()  # Zkontroluje, zda je čas na spuštění úlohy
 
@@ -124,15 +135,15 @@ def main():
 
         if maxTemp.value < temperature:
             maxTemp.value = round(temperature, 1)
-            print("Nová maximální hodnota: ", maxTemp.value)
+            #print("Nová maximální hodnota: ", maxTemp.value)
 
         if posledni_maxTemp < temperature:
             posledni_maxTemp = temperature
-            print("Nová posledni maximální hodnota: ", posledni_maxTemp)
+            #print("Nová posledni maximální hodnota: ", posledni_maxTemp)
         elif temperature < (posledni_maxTemp - FALLaLARM):
             Decline_alert()
             posledni_maxTemp = temperature
-            print("Maximální teplota byla snížena na: ", posledni_maxTemp)
+            #print("Maximální teplota byla snížena na: ", posledni_maxTemp)
          
         for _ in range(int(check_delay / .1)):
             if siren_stop_btn.get():
