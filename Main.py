@@ -102,7 +102,7 @@ def PrumerTeploty():
         print("samazani 60 prvku history_60", list(history_60))
     if len(history_60) > 0:
         print("spusteni average tmp")
-        averageTemp = sum(history_60) / len(history_60)
+        averageTemp.value = sum(history_60) / len(history_60)
     print("hodnota averageTemp: ", averageTemp )
 #definice jak casto se spusti ulozeni prumerne teploty
 schedule.every().minute.do(PrumerTeploty)
