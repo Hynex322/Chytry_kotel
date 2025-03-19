@@ -32,7 +32,7 @@ def maxTemp():
     return str(server_maxTemp.value)
 
 @app.route("/avgTemp")   
-def maxTemp():
+def avgTemp():
     return str(server_averageTemp.value)
     
 @app.route("/reboot")
