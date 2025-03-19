@@ -90,20 +90,17 @@ def Decline_alert():
 
 def PrumerTeploty():
     global averageTemp, history_60
-    print("Spusten PrumerTeploty()")
-    print("hodnota history: ", list(history_60))
-    Decline_alert()
+
     temperature=tmp_sensor.get_temperature()
-    print("[teplota]", temperature)
     history_60.append(round(temperature , 1))  # Přidáme novou hodnotu
-    print("hodnota history po pridani: ", list(history_60))
+
     if len(history_60) > 60:
         history_60.pop(0)  # Omezíme délku na 60 prvků
-        print("samazani 60 prvku history_60", list(history_60))
+
     if len(history_60) > 0:
-        print("spusteni average tmp")
         averageTemp.value = sum(history_60) / len(history_60)
     print("hodnota averageTemp: ", averageTemp )
+    
 #definice jak casto se spusti ulozeni prumerne teploty
 schedule.every().minute.do(PrumerTeploty)
        
