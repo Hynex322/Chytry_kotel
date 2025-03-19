@@ -97,7 +97,8 @@ def PrumerTeploty():
     history_60.append(round(temperature , 1))  # Přidáme novou hodnotu
     if len(history_60) > 60:
         history_60.pop(0)  # Omezíme délku na 60 prvků
-    averageTemp = sum(history_60) / len(history_60)
+    if len(history_60) > 0:
+        averageTemp = sum(history_60) / len(history_60)
     print("hodnota averageTemp: ", averageTemp.value )
 #definice jak casto se spusti ulozeni prumerne teploty
 schedule.every().minute.do(PrumerTeploty)
