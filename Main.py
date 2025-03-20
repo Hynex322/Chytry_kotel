@@ -155,6 +155,19 @@ def PrumerTeploty():
         averageTemp.value = sum(history_60) / len(history_60)
     print("hodnota averageTemp: ", averageTemp )
 
+def KontrolaVypnuti(history, pocet_kontrolovanych, roztopen_kotel):
+    # Pokud je seznam kratší než požadovaný počet kontrolovaných prvků, vrátíme False
+    if (len(history) < pocet_kontrolovanych) or (not roztopen_kotel):
+        #print("Seznam je příliš krátký! Požadováno:", pocet_kontrolovanych, "Dostupné:", len(history))
+        return False
+
+    # Procházíme prvky od konce seznamu směrem k začátku
+    for ii in range(len(history) - 1, len(history) - 1 - pocet_kontrolovanych, -1):
+    	if history[ii] > LIMIT_VYPNUTI:
+            print("Teplota je moc vysoká:", history[ii], "Kontrola pole:", ii)
+            return False  # Okamžité ukončení při vysoké teplotě
+    return True
+
 #definice jak casto se spusti ulozeni prumerne teploty
 schedule.every().minute.do(PrumerTeploty)
 
@@ -165,7 +178,7 @@ def main():
     pressed_for = 0
     blik_i = 0
     odpocet = 0
-    roztopen_kotel = 0
+    roztopen_kotel = False
    
     while True:
         temperature = tmp_sensor.get_temperature()
@@ -230,18 +243,12 @@ def main():
         print("History:", list(history))  # Výpis historie
 
         if (not roztopen_kotel) and (temperature > TEPLOTA_ROZTOPENO):
-            roztopen_kotel = 1
-        if (roztopen_kotel and (len(history) > 5) and (temperature < LIMIT_VYPNUTI)):
-            for ii in range(6):
-                if history[ii] > LIMIT_VYPNUTI:
-                    print("teplota je moc vysoka ", history[ii])
-                    break
-                else:
-                    print("kotel se vypne ",ii)
-            if ii == 5:
-                print("vypinam kotel")
-                time.sleep(120.0) #zpozdeni kdyby se nekde stala chyba
-                ShutDown()
+            roztopen_kotel = True
+    
+        if KontrolaVypnuti(history, 6, roztopen_kotel):
+            print("vypinam kotel")
+            time.sleep(220.0) #zpozdeni kdyby se nekde stala chyba
+            ShutDown()
          
 
 # program start
