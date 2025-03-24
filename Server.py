@@ -16,7 +16,7 @@ def index():
     global server_history, server_maxTemp, server_averageTemp
     return render_template(
         'main.html', 
-        temp=round(sensor.get_temperature(), 1)
+        temp=round(sensor.get_temperature(), 1),
         len=len(server_history), 
         history=list(server_history),  # Převod sdíleného seznamu na běžný seznam
         server_maxTemp=server_maxTemp.value,
