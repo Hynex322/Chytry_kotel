@@ -184,6 +184,8 @@
             <audio id="xyz" src="/siren_sound.mp3" preload="auto" loop="loop" autoplay="autoplay"></audio> alarm-->
         </div>
     <script>
+        var maxTemper = 0;
+
         Number.prototype.clamp = function(min, max) {
             return Math.min(Math.max(this, min), max);
         };
@@ -214,6 +216,10 @@
             if (obj.status == 200) {
                 var t = obj.responseText;
                 t = Math.round(parseFloat(t) * 10) / 10;
+                if ( t > maxTemper) {
+                    update_element('tempMax-label', t);
+                    maxTemper=t;
+                }
                 update_temperature(t);
                 if (t >= 90 && !alarmed) {
                     trigger_alarm();
@@ -230,7 +236,10 @@
             update_lock = false;
 
             if (obj.status == 200) {
-                var maxTemper = obj.responseText;
+                var new_maxTemper = obj.responseText;
+                if(new_maxTemper > maxTemper){
+                    maxTemper = new_maxTemper;
+                }
             //    alert("MaxTemper" + maxTemper);
                 maxTemper = Math.round(parseFloat(maxTemper) * 10) / 10;                
                 update_element('tempMax-label', maxTemper);                
@@ -274,7 +283,7 @@
 
             if(prvni_spusteni){                
                 for (var i = 0; i < historie.length; i++) {
-                    update_element('temp-label', historie[i]);
+                    /*update_element('temp-label', historie[i]);*/
                     var percentage_list = (historie[i]).clamp(0, 100);
                     if(percentage_list<BLUE_LIMIT){
                        var color_list = "00008B";

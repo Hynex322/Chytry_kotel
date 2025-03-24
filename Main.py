@@ -152,7 +152,7 @@ def PrumerTeploty():
         history_60.pop(0)  # Omezíme délku na 60 prvků
 
     if len(history_60) > 0:
-        averageTemp.value = sum(history_60) / len(history_60)
+        averageTemp.value = round(sum(history_60) / len(history_60), 1)
     print("hodnota averageTemp: ", averageTemp )
 
 def KontrolaVypnuti(history, pocet_kontrolovanych, roztopen_kotel):
