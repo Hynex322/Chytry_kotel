@@ -30,7 +30,7 @@ HISTORYlEN = 10
 PERIODhISTORY = 120 # ve vterinach, vzdalenost zaznamu 
 TEPLOTA_ROZTOPENO = 50 #°C #Hranice od kdy se aktivuje automatickemu vypnuti
 LIMIT_VYPNUTI = 30     #°C #Hranice automatickeho vypnuti
-SPODNI_ALARM_LIMIT= 40 #°C #Spodni hranice od kdy prestane hlasit FALLaLARM
+SPODNI_ALARM_LIMIT= 45 #°C #Spodni hranice od kdy prestane hlasit FALLaLARM
 
 main_tmp_sensor = '28-00000a10a10f'
 
@@ -113,13 +113,13 @@ def Sos():
         time.sleep(0.1)
         alert_long()
         time.sleep(0.1)
-        alert_long()
-        time.sleep(0.1)
-        alert_short()
-        time.sleep(0.1)
-        alert_short()
-        time.sleep(0.1)
-        alert_short()
+        #alert_long() # pulka zrusena protoze je to pry otravne
+        #time.sleep(0.1)
+        #alert_short()
+        #time.sleep(0.1)
+        #alert_short()
+        #time.sleep(0.1)
+        #alert_short()
 
 # Vytvoření plánovače
 scheduler = sched.scheduler(time.time, time.sleep)
